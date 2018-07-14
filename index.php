@@ -1,18 +1,21 @@
 <?php
 
+/**
+ *  This is procedural PHP framework just for my assignment studies.
+ */
 require_once __DIR__ . '/bootstrap.php';
 
-var_dump($config['database']['default_driver']);
+//suggestion router index.php?url=module/action
 
-echo app_path('kambing');
-
-resolveDatabaseDriver($config['database']['default_driver']);
-
-if (!isset($_REQUEST['module']) && !isset($_REQUEST['action'])) {
-
-	die("return to index page");
-} else {
-
-	//start resolve and dispatching routing
-	echo resolveRouting(['module' => $_REQUEST['module'], 'action' => $_REQUEST['action']]);
+if (!isset($_REQUEST['url'])) {
+    die("not valid router");
 }
+
+//temporary function
+function abort_404()
+{
+    echo "404";
+}
+
+$url_segments = explode('/', $_REQUEST['url']);
+return count($url_segments) != 2 ? abort_404() : resolve_routing(['module' => $url_segments[0], 'action' => $url_segments[1]]);

@@ -1,17 +1,92 @@
 <?php
+if (!function_exists('get_routes')) {
 
-if (!function_exists('resolveRouting')) {
+    /**
+     * @return mixed
+     */
+    function get_routes(): array
+    {
+        global $routeCollections;
+        return $routeCollections;
+    }
+}
 
-	function resolveRouting(array $map): string {
+if (!function_exists('resolve_routing')) {
 
-		return http_build_query($map);
-	}
+    /**
+     * @param array $map
+     */
+    function resolve_routing(array $map)
+    {
+        //solve for module loader
+        $path = service_path($map['module'] . '/' . $map['action'] . '.php');
+        $requestSegment = $map['module'] . '/' . $map['action'];
+
+        //check does current route request segment are refined inside routes registration.
+        if (!array_key_exists($requestSegment, get_routes())) {
+            return abort("route for {$requestSegment} not found.", 404);
+        }
+
+        if (!file_exists($path)) {
+            return abort();
+        }
+
+        require_once $path;
+    }
 }
 
 if (!function_exists('app_path')) {
 
-	function app_path($path = null) {
+    /**
+     * @param $path
+     */
+    function app_path($path = null)
+    {
+        return is_null($path) ? APP_PATH : APP_PATH . '/' . $path;
+    }
+}
 
-		return is_null($path) ? APP_PATH : APP_PATH . '/' . $path;
-	}
+if (!function_exists('config_path')) {
+
+    /**
+     * @param $path
+     */
+    function config_path($path = null)
+    {
+        return is_null($path) ? CONFIG_PATH : CONFIG_PATH . '/' . $path;
+    }
+}
+
+if (!function_exists('lib_path')) {
+
+    /**
+     * @param $path
+     */
+    function lib_path($path = null)
+    {
+        return is_null($path) ? LIB_PATH : LIB_PATH . '/' . $path;
+    }
+}
+
+if (!function_exists('service_path')) {
+
+    /**
+     * @param $path
+     */
+    function service_path($path = null)
+    {
+        return is_null($path) ? SERVICE_PATH : SERVICE_PATH . '/' . $path;
+    }
+}
+
+if (!function_exists('abort')) {
+
+    /**
+     * @param $view
+     * @param null    $code
+     */
+    function abort($view = null, $code = 404)
+    {
+        return include_once service_path('errors/abort.php');
+    }
 }
