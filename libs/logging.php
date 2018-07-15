@@ -30,12 +30,21 @@ function create_file_log($name = null)
 }
 
 /**
+ * @param $contents
+ */
+function log_content($contents)
+{
+    return file_put_contents(logging_path(get_log_formatname() . get_log_extension()), $contents, FILE_APPEND);
+}
+
+/**
  * @param $message
  */
 function info($message = null)
 {
     $log_message = get_format("info", today(), $message);
-    return file_put_contents(logging_path(get_log_formatname() . get_log_extension()), $log_message, FILE_APPEND);
+    return log_content($log_message);
+
 }
 
 /**
@@ -44,7 +53,7 @@ function info($message = null)
 function debug($message = null)
 {
     $log_message = get_format("debug", today(), $message);
-    return file_put_contents(logging_path(get_log_formatname() . get_log_extension()), $log_message, FILE_APPEND);
+    return log_content($log_message);
 }
 
 /**
@@ -53,7 +62,7 @@ function debug($message = null)
 function error($message = null)
 {
     $log_message = get_format("error", today(), $message);
-    return file_put_contents(logging_path(get_log_formatname() . get_log_extension()), $log_message, FILE_APPEND);
+    return log_content($log_message);
 }
 
 /**
@@ -62,5 +71,5 @@ function error($message = null)
 function warning($message = null)
 {
     $log_message = get_format("warning", today(), $message);
-    return file_put_contents(logging_path(get_log_formatname() . get_log_extension()), $log_message, FILE_APPEND);
+    return log_content($log_message);
 }

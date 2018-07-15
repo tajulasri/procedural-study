@@ -1,4 +1,5 @@
 <?php
+
 if (!function_exists('get_routes')) {
 
     /**
@@ -8,6 +9,19 @@ if (!function_exists('get_routes')) {
     {
         global $routeCollections;
         return $routeCollections;
+    }
+}
+
+if (!function_exists('get_db_connection')) {
+
+    /**
+     * @return mixed
+     */
+    function get_db_connection()
+    {
+        //somehow this pattern and solution might have other pro and cons.
+        global $database_connection;
+        return $database_connection;
     }
 }
 
@@ -45,7 +59,7 @@ if (!function_exists('resolve_routing')) {
             ];
         }
 
-        $request_route = get_routes()[$request_url];
+        $request_route = isset(get_routes()[$request_url]) ? get_routes()[$request_url] : [];
         //check request method does match current defined inside our routes registar.
 
         if ($http_method !== $request_route['method']) {
@@ -82,12 +96,13 @@ if (!function_exists('resolve_routing')) {
         if (count($stack_traces)) {
 
             foreach (array_reverse($stack_traces) as $trace) {
+                error(implode(PHP_EOL, $trace));
                 echo json_encode($trace) . "<br />";
             }
-
             exit;
         }
 
+        //render view xontext
         require_once $path;
     }
 }

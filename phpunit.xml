@@ -20,7 +20,7 @@
     </filter>
 
      <php>
-        <env name="DATABASE_NAME" value="hypr" />
+        <env name="DATABASE_NAME" value="test" />
         <env name="DATABASE_USER" value="root" />
         <env name="DATABASE_PASS" value="password" />
         <env name="DATABASE_HOST" value="127.0.0.1" />

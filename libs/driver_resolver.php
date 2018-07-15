@@ -18,7 +18,13 @@ function create_pdo_driver($config = [])
 
     } catch (PDOException $e) {
 
-        error($e->getMessage());
+        $stack_traces[] = [
+            'message'         => $e->getMessage(),
+            'line'            => __LINE__,
+            'invoke_function' => __FUNCTION__,
+            'file'            => __FILE__,
+        ];
+
         return $e->getMessage();
     }
 }
@@ -35,8 +41,23 @@ function create_mysqli_driver($config = [])
         $config['password'],
         $config['database_name']);
 
-    if (mysqli_connect_errno()) {
-        return error(mysqli_connect_error());
+    if (!$connection) {
+        $stack_traces[] = [
+            'message'         => "unable to connect via mysqli",
+            'line'            => __LINE__,
+            'invoke_function' => __FUNCTION__,
+            'file'            => __FILE__,
+        ];
+    }
+
+    //exit request cycle if any stack trace are counted.
+    if (count($stack_traces)) {
+
+        foreach (array_reverse($stack_traces) as $trace) {
+            error(implode(PHP_EOL, $trace));
+            echo json_encode($trace) . "<br />";
+        }
+        exit;
     }
 
     return $connection;
