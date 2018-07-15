@@ -65,6 +65,19 @@ class ApplicationTest extends TestCase
         $this->assertEquals(implode('/', $currentDir), service_path());
     }
 
+    public function test_spin_environment()
+    {
+        $environment = 'local';
+        $this->assertEquals($environment, environment());
+    }
+
+    public function test_boostrapping_logging()
+    {
+        create_file_log(environment());
+        $this->assertFileExists(logging_path(environment() . '.log'));
+        @unlink(logging_path(environment() . '.log'));
+    }
+
     //database driver test section
     public function test_bootstrapping_mysqli_driver()
     {

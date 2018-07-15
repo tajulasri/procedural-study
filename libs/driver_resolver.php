@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @param array $config
+ * @param  array   $config
  * @return mixed
  */
 function create_pdo_driver($config = [])
@@ -18,12 +18,13 @@ function create_pdo_driver($config = [])
 
     } catch (PDOException $e) {
 
+        error($e->getMessage());
         return $e->getMessage();
     }
 }
 
 /**
- * @param array $config
+ * @param  array   $config
  * @return mixed
  */
 function create_mysqli_driver($config = [])
@@ -33,6 +34,10 @@ function create_mysqli_driver($config = [])
         $config['username'],
         $config['password'],
         $config['database_name']);
+
+    if (mysqli_connect_errno()) {
+        return error(mysqli_connect_error());
+    }
 
     return $connection;
 }

@@ -3,7 +3,7 @@
 /**
  *  This is procedural PHP framework just for my assignment studies.
  */
-require_once __DIR__ . '/bootstrap.php';
+require_once '../bootstrap.php';
 
 //suggestion router index.php?url=module/action
 

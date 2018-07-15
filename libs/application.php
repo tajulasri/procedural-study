@@ -35,6 +35,28 @@ if (!function_exists('resolve_routing')) {
     }
 }
 
+if (!function_exists('load_module')) {
+
+    /**
+     * @param $path
+     */
+    function load_module($path)
+    {
+
+    }
+}
+
+if (!function_exists('load_middleware')) {
+
+    /**
+     * @param $path
+     */
+    function load_middleware($alias)
+    {
+        return function_exists($alias) ? call_user_func($alias) : false;
+    }
+}
+
 if (!function_exists('app_path')) {
 
     /**
@@ -79,6 +101,17 @@ if (!function_exists('service_path')) {
     }
 }
 
+if (!function_exists('logging_path')) {
+
+    /**
+     * @param $path
+     */
+    function logging_path($path = null)
+    {
+        return is_null($path) ? LOGGING_PATH : LOGGING_PATH . '/' . $path;
+    }
+}
+
 if (!function_exists('abort')) {
 
     /**
@@ -88,5 +121,29 @@ if (!function_exists('abort')) {
     function abort($view = null, $code = 404)
     {
         return include_once service_path('errors/abort.php');
+    }
+}
+
+if (!function_exists('environment')) {
+
+    /**
+     * @param $view
+     * @param null    $code
+     */
+    function environment()
+    {
+        return ENV ? ENV : 'local';
+    }
+}
+
+if (!function_exists('today')) {
+
+    /**
+     * @param $view
+     * @param null    $code
+     */
+    function today()
+    {
+        return date('Y-m-d');
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'database' => [
+    'database'    => [
 
         'default_driver' => 'mysqli',
         'pdo'            => [
@@ -25,7 +25,11 @@ return [
             'charset'       => '',
         ],
     ],
-    'session'  => [
+    'session'     => [
 
+    ],
+    'middlewares' => [
+        //alias => 'function_string'
+        'auth' => 'need_login',
     ],
 ];
