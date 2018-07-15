@@ -14,4 +14,4 @@ composer install
 ```
 
 ### Diagram
-[logo]: diagram.png "Diagram"
+![Basic Diagram ](https://github.com/tajulasri/procedural-study/blob/master/diagram.png)
