@@ -18,17 +18,65 @@ if (!function_exists('resolve_routing')) {
      */
     function resolve_routing(array $map)
     {
-        //solve for module loader
-        $path = service_path($map['module'] . '/' . $map['action'] . '.php');
-        $requestSegment = $map['module'] . '/' . $map['action'];
+        $request_path = preg_replace('/^\//', '', $map['path']);
 
-        //check does current route request segment are refined inside routes registration.
-        if (!array_key_exists($requestSegment, get_routes())) {
-            return abort("route for {$requestSegment} not found.", 404);
+        $http_method = strtolower($map['method']);
+        $request_query = [];
+
+        //trim url routes
+        $request_url = $request_path;
+
+        if (strpos($request_path, '?')) {
+            //if query string are present
+            $seperate_string = explode("?", $request_path);
+            $querystring = parse_str($seperate_string[1], $query);
+            $request_query = $query;
+            $request_url = substr($request_path, 0, strpos($request_path, '?'));
         }
 
+        //check does route are exists
+        if (!array_key_exists($request_url, get_routes())) {
+
+            $stack_traces[] = [
+                'message' => "Route with {$request_url} not found.",
+            ];
+        }
+
+        $request_route = get_routes()[$request_url];
+        //check request method does match current defined inside our routes registar.
+
+        if ($http_method !== $request_route['method']) {
+            $stack_traces[] = [
+                'message' => "Route with {$request_url} method not allowed.",
+            ];
+        }
+
+        //check does current registered requested route does has any middleware?
+
+        if (isset($request_route['middleware'])) {
+            //forward request to middleware
+        }
+
+        //build path for load ready services if available and exists
+        $path = service_path($request_route['service'] . '/' . $request_route['action'] . '.php');
+
+        //add one more additional layer to separate logic from our action
+
+        //render action
         if (!file_exists($path)) {
-            return abort();
+            $stack_traces[] = [
+                'message' => 'Service / view action are not found',
+            ];
+        }
+
+        //exit request cycle if any stack trace are counted.
+        if (count($stack_traces)) {
+
+            foreach (array_reverse($stack_traces) as $trace) {
+                echo json_encode($trace) . "<br />";
+            }
+
+            exit;
         }
 
         require_once $path;

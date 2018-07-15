@@ -1,15 +1,16 @@
 <?php
 declare (strict_types = 1);
-
+session_start();
+//register all dependencies
 require_once 'vendor/autoload.php';
-
 require_once 'libs/application.php';
 require_once 'libs/driver_resolver.php';
 require_once 'libs/logging.php';
+
 $config = require_once 'config/app_config.php';
 $routeCollections = require_once 'router/routes.php';
 
-session_start();
+$stack_traces = [];
 
 //define all constant
 const DS = DIRECTORY_SEPARATOR;
@@ -26,6 +27,7 @@ const ENV = 'local';
 
 //boot and start database driver
 //$db = database_driver_resolver($config['database']['default_driver'], $config['database']['mysqli']);
-//create_file_log(environment());
 
-info("testing logger kambing");
+//maybe move to bootstrapping procedure
+create_file_log(environment());
+info("testing logger");

@@ -1,3 +1,2 @@
 <?php
-
 #!/env/bin/php
