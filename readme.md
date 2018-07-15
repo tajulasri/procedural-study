@@ -12,3 +12,6 @@ composer install
 ./run_server
 
 ```
+
+### Diagram
+[logo]: diagram.png "Diagram"
