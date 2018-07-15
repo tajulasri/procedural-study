@@ -38,7 +38,10 @@ if (!function_exists('resolve_routing')) {
         if (!array_key_exists($request_url, get_routes())) {
 
             $stack_traces[] = [
-                'message' => "Route with {$request_url} not found.",
+                'message'         => "Route with {$request_url} not found.",
+                'line'            => __LINE__,
+                'file'            => __FILE__,
+                'invoke_function' => __FUNCTION__,
             ];
         }
 
@@ -47,7 +50,10 @@ if (!function_exists('resolve_routing')) {
 
         if ($http_method !== $request_route['method']) {
             $stack_traces[] = [
-                'message' => "Route with {$request_url} method not allowed.",
+                'message'         => "Route with {$request_url} method not allowed.",
+                'line'            => __LINE__,
+                'file'            => __FILE__,
+                'invoke_function' => __FUNCTION__,
             ];
         }
 
@@ -65,7 +71,10 @@ if (!function_exists('resolve_routing')) {
         //render action
         if (!file_exists($path)) {
             $stack_traces[] = [
-                'message' => 'Service / view action are not found',
+                'message'         => 'Service / view action are not found',
+                'line'            => __LINE__,
+                'file'            => __FILE__,
+                'invoke_function' => __FUNCTION__,
             ];
         }
 
