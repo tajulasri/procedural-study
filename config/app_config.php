@@ -8,7 +8,7 @@ return [
             'host'          => '127.0.0.1',
             'port'          => '3306',
             'database_name' => 'test',
-            'username'      => 'test',
+            'username'      => 'root',
             'password'      => 'password',
             'prefix'        => '',
             'charset'       => '',
@@ -19,14 +19,14 @@ return [
             'host'          => '127.0.0.1',
             'port'          => '3306',
             'database_name' => 'test',
-            'username'      => 'test',
+            'username'      => 'root',
             'password'      => 'password',
             'prefix'        => '',
             'charset'       => '',
         ],
     ],
     'session'     => [
-
+        'path' => 'logs/sessions',
     ],
     'middlewares' => [
         //alias => 'function_string'

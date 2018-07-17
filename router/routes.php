@@ -4,10 +4,11 @@
 return [
 
     'users/view'  => [
-        'service' => 'users',
-        'action'  => 'view',
-        'method'  => 'get',
-        'alias'   => 'login_view',
+        'service'    => 'users',
+        'action'     => 'view',
+        'method'     => 'get',
+        'alias'      => 'login_view',
+        'middleware' => 'need_login',
     ],
 
     'users/login' => [

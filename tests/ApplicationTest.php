@@ -91,6 +91,26 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(PDO::class, $databaseDriverResolver);
     }
 
+    public function test_boostrapping_repository_by_driver()
+    {
+        //by default we supply mysqli as fallback driver
+        //to see fail assertion please change driver mysqli | PDO
+
+        $driver = 'mysqli';
+        $this->assertArraySubset(['loaded_repository' => $driver], database_repository_resolver($driver));
+        //below assertion should fail caused of there is not driver name sample
+        $this->assertFalse(database_repository_resolver('sample'));
+    }
+
+    public function test_get_database_connection_on_boot()
+    {
+        //default driver is mysql
+        //to demostrate false assertion
+        //change config to "pdo" driver
+        $this->assertInstanceOf(Mysqli::class, get_db_connection());
+        $this->assertNotInstanceOf(PDO::class, get_db_connection());
+    }
+
     //session driver test section
 
     //router session test section

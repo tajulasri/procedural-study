@@ -50,16 +50,6 @@ function create_mysqli_driver($config = [])
         ];
     }
 
-    //exit request cycle if any stack trace are counted.
-    if (count($stack_traces)) {
-
-        foreach (array_reverse($stack_traces) as $trace) {
-            error(implode(PHP_EOL, $trace));
-            echo json_encode($trace) . "<br />";
-        }
-        exit;
-    }
-
     return $connection;
 }
 
@@ -84,4 +74,23 @@ function create_user_session($name, $data = [])
 function database_driver_resolver($driver = null, $config = [])
 {
     return call_user_func('create_' . strtolower($driver) . '_driver', $config);
+}
+
+/**
+ * @param $driver
+ */
+function database_repository_resolver($driver = null)
+{
+    //by default we supply mysqli default driver as fallback
+    if (is_null($driver)) {
+        $driver = 'mysqli';
+    }
+
+    $driver_path = lib_path("/{$driver}_repository.php");
+    if (!file_exists($driver_path)) {
+        return false;
+    }
+
+    require_once $driver_path;
+    return ['loaded_repository' => $driver];
 }

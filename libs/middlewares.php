@@ -1,6 +1,6 @@
 <?php
 
-function need_login()
+function middleware_need_login()
 {
     return "need login";
 }
