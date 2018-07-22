@@ -73,7 +73,7 @@ function create_user_session($name, $data = [])
  */
 function database_driver_resolver($driver = null, $config = [])
 {
-    return call_user_func('create_' . strtolower($driver) . '_driver', $config);
+    return call_user_func('create_'.strtolower($driver).'_driver', $config);
 }
 
 /**

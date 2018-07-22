@@ -10,6 +10,7 @@ if (!function_exists('get_users')) {
         $rows = [];
         $db = get_db_connection();
         $result = $db->query("select * from users");
+
         foreach ($result->fetch_assoc() as $data) {
             $rows[] = $data;
         }

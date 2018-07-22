@@ -5,6 +5,15 @@ if (!function_exists('get_routes')) {
     /**
      * @return mixed
      */
+    function get_stack_traces(): array
+    {
+        global $stack_traces;
+        return $stack_traces;
+    }
+
+    /**
+     * @return mixed
+     */
     function get_routes(): array
     {
         global $routeCollections;
@@ -33,12 +42,15 @@ if (!function_exists('resolve_routing')) {
     function resolve_routing(array $map)
     {
         $request_path = preg_replace('/^\//', '', $map['path']);
-
         $http_method = strtolower($map['method']);
         $request_query = [];
 
+        $stack_traces = get_stack_traces();
+
         //trim url routes
         $request_url = $request_path;
+        //delegate and initiate from base stack request for middleware use.
+        $request_stacks = request_stacks($_SERVER, $_REQUEST);
 
         if (strpos($request_path, '?')) {
             //if query string are present
@@ -57,6 +69,8 @@ if (!function_exists('resolve_routing')) {
                 'file'            => __FILE__,
                 'invoke_function' => __FUNCTION__,
             ];
+
+            error_reporting(0);
         }
 
         $request_route = isset(get_routes()[$request_url]) ? get_routes()[$request_url] : [];
@@ -75,10 +89,30 @@ if (!function_exists('resolve_routing')) {
 
         if (isset($request_route['middleware'])) {
             //forward request to middleware
+            if ($request_route['middleware'] instanceof Closure) {
+                //we are not stop and return current request from middleware.
+                //we keep proceed and forward our request to next cycle.
+                $request_route['middleware']($request_stacks);
+            } elseif (is_string($request_route['middleware'])) {
+
+                if (!function_exists($request_route['middleware'])) {
+                    //dump to stack traces error
+                    $stack_traces[] = [
+                        'message'         => 'Middleware function are not found!.',
+                        'line'            => __LINE__,
+                        'file'            => __FILE__,
+                        'invoke_function' => __FUNCTION__,
+                    ];
+                } else {
+
+                    //forward request to middleware
+                    call_user_func_array($request_route['middleware'], [$request_stacks]);
+                }
+            }
         }
 
         //build path for load ready services if available and exists
-        $path = service_path($request_route['service'] . '/' . $request_route['action'] . '.php');
+        $path = service_path($request_route['service'].'/'.$request_route['action'].'.php');
 
         //add one more additional layer to separate logic from our action
 
@@ -97,7 +131,7 @@ if (!function_exists('resolve_routing')) {
 
             foreach (array_reverse($stack_traces) as $trace) {
                 error(implode(PHP_EOL, $trace));
-                echo json_encode($trace) . "<br />";
+                echo json_encode($trace)."<br />";
             }
             exit;
         }
@@ -136,7 +170,7 @@ if (!function_exists('app_path')) {
      */
     function app_path($path = null)
     {
-        return is_null($path) ? APP_PATH : APP_PATH . '/' . $path;
+        return is_null($path) ? APP_PATH : APP_PATH.'/'.$path;
     }
 }
 
@@ -147,7 +181,7 @@ if (!function_exists('config_path')) {
      */
     function config_path($path = null)
     {
-        return is_null($path) ? CONFIG_PATH : CONFIG_PATH . '/' . $path;
+        return is_null($path) ? CONFIG_PATH : CONFIG_PATH.'/'.$path;
     }
 }
 
@@ -158,7 +192,7 @@ if (!function_exists('lib_path')) {
      */
     function lib_path($path = null)
     {
-        return is_null($path) ? LIB_PATH : LIB_PATH . '/' . $path;
+        return is_null($path) ? LIB_PATH : LIB_PATH.'/'.$path;
     }
 }
 
@@ -169,7 +203,7 @@ if (!function_exists('service_path')) {
      */
     function service_path($path = null)
     {
-        return is_null($path) ? SERVICE_PATH : SERVICE_PATH . '/' . $path;
+        return is_null($path) ? SERVICE_PATH : SERVICE_PATH.'/'.$path;
     }
 }
 
@@ -180,7 +214,7 @@ if (!function_exists('logging_path')) {
      */
     function logging_path($path = null)
     {
-        return is_null($path) ? LOGGING_PATH : LOGGING_PATH . '/' . $path;
+        return is_null($path) ? LOGGING_PATH : LOGGING_PATH.'/'.$path;
     }
 }
 
@@ -217,5 +251,20 @@ if (!function_exists('today')) {
     function today()
     {
         return date('Y-m-d');
+    }
+}
+
+if (!function_exists('request_stacks')) {
+
+    /**
+     * @param $view
+     * @param null    $code
+     */
+    function request_stacks()
+    {
+        return [
+            '_server' => func_get_arg(0),
+            '_data'   => func_get_arg(1),
+        ];
     }
 }

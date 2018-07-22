@@ -22,7 +22,7 @@
      <php>
         <env name="DATABASE_NAME" value="test" />
         <env name="DATABASE_USER" value="root" />
-        <env name="DATABASE_PASS" value="password" />
+        <env name="DATABASE_PASS" value="" />
         <env name="DATABASE_HOST" value="127.0.0.1" />
     </php>
 </phpunit>

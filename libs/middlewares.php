@@ -1,6 +1,9 @@
 <?php
 
-function middleware_need_login()
+/**
+ * @param $request
+ */
+function need_login($request)
 {
-    return "need login";
+    echo "pipeline through middleware";
 }
